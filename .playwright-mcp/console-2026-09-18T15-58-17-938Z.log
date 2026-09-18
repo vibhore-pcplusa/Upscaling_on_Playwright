@@ -1,0 +1,2 @@
+[    2948ms] [WARNING] Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading @ https://maps.google.com/maps/api/js?key=AIzaSyA9RAcx0TyxvTCZBg3ol7PNtE8xwEJ2rbg&libraries=places,geometry&v=3.63:1396
+[    2993ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://staging23.cornerstone2.net/login:0

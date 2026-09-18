@@ -1,0 +1,31 @@
+- generic [ref=e4]:
+  - img "America's Call Center" [ref=e5]
+  - heading "Welcome to Cornerstone 2" [level=3] [ref=e6]
+  - paragraph [ref=e7]:
+    - text: Please provide your username and password to login to Cornerstone 2. If you are an inspector, real estate professional or buyer you can get more information about
+    - link "America's Call Center" [ref=e8] [cursor=pointer]:
+      - /url: http://americascallcenter.com
+    - text: online by
+    - link "visiting our website" [ref=e9] [cursor=pointer]:
+      - /url: http://americascallcenter.com
+    - text: .
+  - table [ref=e11]:
+    - rowgroup [ref=e12]:
+      - row [ref=e13]:
+        - columnheader "Username:" [ref=e14]
+        - rowheader [ref=e15]
+        - cell [ref=e16]:
+          - textbox [active] [ref=e17]
+      - row [ref=e18]:
+        - columnheader "Password:" [ref=e19]
+        - rowheader [ref=e20]
+        - cell [ref=e21]:
+          - textbox [ref=e22]
+      - row [ref=e23]:
+        - columnheader [ref=e24]
+        - rowheader [ref=e25]
+        - cell [ref=e26]:
+          - link "Login" [ref=e27] [cursor=pointer]:
+            - /url: javascript:;
+          - link "Learn about America's Call Center" [ref=e28] [cursor=pointer]:
+            - /url: http://americascallcenter.com
