@@ -31,6 +31,7 @@ def logged_in_page(page: Page, credentials):
 
 def test_login_invalid_credentials(page: Page):
     """Test login with incorrect password."""
+    print("\nRunning test_login_invalid_credentials")
     page.goto("https://staging23.cornerstone2.net/login")
     
     # Fill in valid username but wrong password
@@ -44,6 +45,7 @@ def test_login_invalid_credentials(page: Page):
 
 def test_login_empty_credentials(page: Page):
     """Test login with empty fields."""
+    print("\nRunning test_login_empty_credentials")
     page.goto("https://staging23.cornerstone2.net/login")
     
     # Leave fields empty and submit
@@ -57,6 +59,7 @@ def test_login_empty_credentials(page: Page):
 
 def test_agencies_page_ui(logged_in_page: Page):
     """Verify key UI elements on the agencies page."""
+    print("\nRunning test_agencies_page_ui")
     page = logged_in_page
     page.goto(AGENCIES_URL)
     
@@ -73,6 +76,7 @@ def test_agencies_page_ui(logged_in_page: Page):
 
 def test_add_new_agency(logged_in_page: Page):
     """Test dynamically adding a new test agency."""
+    print("\nRunning test_add_new_agency")
     page = logged_in_page
     
     # Go directly to the add agency page
@@ -103,10 +107,11 @@ def test_add_new_agency(logged_in_page: Page):
     
     # The new agency might not be on the first page, so this assertion is soft
     # or you could search for it if a search bar exists.
-    print(f"\\nSuccessfully created agency: {test_agency_name}")
+    print(f"\nSuccessfully created agency: {test_agency_name}")
 
 def test_login_and_scrape_agencies(logged_in_page: Page):
     """Logs in and scrapes all agencies to CSV."""
+    print("\nRunning test_login_and_scrape_agencies")
     page = logged_in_page
     page.goto(AGENCIES_URL)
     page.wait_for_load_state("networkidle")
@@ -149,5 +154,6 @@ def test_login_and_scrape_agencies(logged_in_page: Page):
         writer.writeheader()
         writer.writerows(scraped_data)
         
-    print(f"\\nScraped {len(scraped_data)} agencies to {csv_file}")
+    print(f"\nScraped {len(scraped_data)} agencies to {csv_file}")
     assert len(scraped_data) > 0, "No agencies were scraped"
+    print("\nRun in terminal command to see Reports: open reports/report.html")

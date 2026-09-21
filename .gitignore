@@ -20,6 +20,7 @@ env/
 scratch_*.html
 agencies_scraped.csv
 test-results/
+reports/
 
 # OS generated files
 .DS_Store
