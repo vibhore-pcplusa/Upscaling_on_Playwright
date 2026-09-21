@@ -31,9 +31,21 @@ def pytest_runtest_makereport(item, call):
                 
                 pytest_html = item.config.pluginmanager.getplugin("html")
                 if pytest_html:
-                    # Relative path from reports/report.html to screenshots/filename.png
-                    rel_path = f"screenshots/{filename}"
-                    extras.append(pytest_html.extras.image(rel_path, name="Page Screenshot"))
+                    import base64
+                    with open(filepath, "rb") as f:
+                        encoded = base64.b64encode(f.read()).decode("utf-8")
+                    
+                    # Create a modal popup for the image
+                    img_html = f'''
+                    <div>
+                        <img src="data:image/png;base64,{encoded}" alt="Page Screenshot" style="width:300px;cursor:pointer;border:1px solid #ddd;" onclick="document.getElementById('modal-{clean_name}').style.display='block'" />
+                        <div id="modal-{clean_name}" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgba(0,0,0,0.85);">
+                            <span style="position:absolute;top:20px;right:40px;color:#fff;font-size:50px;font-weight:bold;cursor:pointer;" onclick="document.getElementById('modal-{clean_name}').style.display='none'">&times;</span>
+                            <img src="data:image/png;base64,{encoded}" style="margin:auto;display:block;width:auto;max-width:90%;max-height:90vh;margin-top:2%;" />
+                        </div>
+                    </div>
+                    '''
+                    extras.append(pytest_html.extras.html(img_html))
             except Exception as e:
                 print(f"Failed to capture Playwright screenshot for report: {e}")
         

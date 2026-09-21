@@ -5,19 +5,23 @@ from playwright.sync_api import sync_playwright
 load_dotenv()
 CS_USERNAME = os.getenv("CS_USERNAME")
 CS_PASSWORD = os.getenv("CS_PASSWORD")
+BASE_URL = os.getenv("BASE_URL", "https://dev23.cornerstone2.net").rstrip("/")
+
+LOGIN_URL = f"{BASE_URL}/login"
+ADD_AGENCY_URL = f"{BASE_URL}/agencies/add?pq=eJxLtDKyqi62MrZScvZ0UbLOtDIzti62MjSxUvLJT85OTQnJzE2tys9LVQKJmlopOeamFmUmJ-o7ZwDJ9Hwl61oAiU0Ucw%3D%3D"
 
 def scrape_agencies():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-        page.goto("https://staging23.cornerstone2.net/login")
+        page.goto(LOGIN_URL)
         page.fill("input[name='username']", CS_USERNAME)
         page.fill("input[name='password']", CS_PASSWORD)
         page.press("input[name='password']", "Enter")
         page.wait_for_url(lambda url: "/login" not in url, timeout=10000)
         
-        add_agency_url = "https://staging23.cornerstone2.net/agencies/add?pq=eJxLtDKyqi62MrZScvZ0UbLOtDI0sjSyLrYyNLFS8slPzk5NCcnMTa3Kz0tVAomaWik55qYWZSYn6gdk5KfmZVYoWdcCAKeRFQU%3D"
-        page.goto(add_agency_url)
+        page.goto(ADD_AGENCY_URL)
+
         page.wait_for_timeout(5000)
         
         html = page.content()

@@ -1,5 +1,16 @@
+import fs from 'fs';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+
+// Read BASE_URL from process.env or parse from .env file
+let baseUrl = process.env.BASE_URL;
+if (!baseUrl && fs.existsSync('.env')) {
+  const envContent = fs.readFileSync('.env', 'utf8');
+  const match = envContent.match(/^BASE_URL=(.+)$/m);
+  if (match) baseUrl = match[1].trim();
+}
+baseUrl = (baseUrl || 'https://dev23.cornerstone2.net').replace(/\/$/, '');
+const loginUrl = `${baseUrl}/login`;
 
 async function main() {
   const transport = new StdioClientTransport({
@@ -14,11 +25,12 @@ async function main() {
 
   await client.connect(transport);
 
-  console.log('Navigating to login...');
+  console.log(`Navigating to login (${loginUrl})...`);
   await client.callTool({
     name: 'browser_navigate',
-    arguments: { url: 'https://staging23.cornerstone2.net/login' }
+    arguments: { url: loginUrl }
   });
+
 
   console.log('Evaluating DOM...');
   const result = await client.callTool({
@@ -27,12 +39,12 @@ async function main() {
   });
 
   console.log(result.content[0].text);
-  
+
   await client.callTool({
     name: 'browser_close',
     arguments: {}
   });
-  
+
   process.exit(0);
 }
 
