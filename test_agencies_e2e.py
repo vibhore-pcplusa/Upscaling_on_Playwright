@@ -157,3 +157,91 @@ def test_login_and_scrape_agencies(logged_in_page: Page):
     print(f"\nScraped {len(scraped_data)} agencies to {csv_file}")
     assert len(scraped_data) > 0, "No agencies were scraped"
     print("\nRun in terminal command to see Reports: open reports/report.html")
+
+def test_edit_agency(logged_in_page: Page):
+    """Test dynamically editing an existing agency."""
+    print("\nRunning test_edit_agency")
+    page = logged_in_page
+
+    # Step 1: Create a unique test agency to edit
+    page.goto(ADD_AGENCY_URL)
+    expect(page.locator("input[name='Name']")).to_be_visible(timeout=10000)
+    original_name = f"Auto Edit Agency {uuid.uuid4().hex[:8]}"
+    page.fill("input[name='Name']", original_name)
+    page.fill("input[name='DisplayName']", f"Display: {original_name}")
+    page.locator("text='Save changes for this Company Agency'").click()
+    page.wait_for_url(lambda url: "/agencies/add" not in url, timeout=15000)
+
+    # Step 2: Navigate to agencies list and search for the agency using DataTables search
+    page.goto(AGENCIES_URL)
+    page.wait_for_load_state("networkidle")
+    
+    search_input = page.locator(".dataTables_filter input").first
+    if search_input.count() > 0:
+        search_input.focus()
+        search_input.fill("")
+        search_input.type(original_name, delay=30)
+        search_input.press("Enter")
+        page.wait_for_timeout(2000)
+
+    # Step 3: Click the Edit link for this agency
+    edit_button = page.locator("a[title='Edit']").first
+    expect(edit_button).to_be_visible(timeout=10000)
+    edit_button.click()
+
+    # Step 4: Update the Display Name on the edit form
+    page.wait_for_url(lambda url: "/agencies/edit" in url or "/edit" in url, timeout=10000)
+    updated_display_name = f"Updated Display {uuid.uuid4().hex[:6]}"
+    page.fill("input[name='DisplayName']", updated_display_name)
+
+    # Step 5: Save changes and verify navigation finishes
+    page.locator("text='Save changes for this Company Agency'").click()
+    page.wait_for_url(lambda url: "/agencies/edit" not in url and "/edit" not in url, timeout=15000)
+
+    print(f"Successfully edited agency '{original_name}' to display '{updated_display_name}'")
+
+def test_delete_agency(logged_in_page: Page):
+    """Test dynamically deleting an agency."""
+    print("\nRunning test_delete_agency")
+    page = logged_in_page
+
+    # Step 1: Create a unique test agency to delete
+    page.goto(ADD_AGENCY_URL)
+    expect(page.locator("input[name='Name']")).to_be_visible(timeout=10000)
+    agency_to_delete = f"Auto Delete Agency {uuid.uuid4().hex[:8]}"
+    page.fill("input[name='Name']", agency_to_delete)
+    page.fill("input[name='DisplayName']", f"Display: {agency_to_delete}")
+    page.locator("text='Save changes for this Company Agency'").click()
+    page.wait_for_url(lambda url: "/agencies/add" not in url, timeout=15000)
+
+    # Step 2: Navigate to agencies list and search for the agency
+    page.goto(AGENCIES_URL)
+    page.wait_for_load_state("networkidle")
+    
+    search_input = page.locator(".dataTables_filter input").first
+    if search_input.count() > 0:
+        search_input.focus()
+        search_input.fill("")
+        search_input.type(agency_to_delete, delay=30)
+        search_input.press("Enter")
+        page.wait_for_timeout(2000)
+
+    # Step 3: Handle potential JS dialog confirmation
+    page.on("dialog", lambda dialog: dialog.accept())
+
+    # Step 4: Click the Delete link
+    delete_button = page.locator("a[title='Delete']").first
+    expect(delete_button).to_be_visible(timeout=10000)
+    delete_button.click()
+
+    page.wait_for_timeout(2000)
+    
+    # Step 5: Check if redirected to a confirmation page or modal with a confirm button
+    confirm_delete = page.locator("button:has-text('Delete'), input[type='submit'][value*='Delete'], a.btn:has-text('Delete')")
+    if confirm_delete.count() > 0 and confirm_delete.first.is_visible():
+        confirm_delete.first.click()
+        page.wait_for_timeout(2000)
+
+    print(f"Successfully deleted agency: '{agency_to_delete}'")
+
+
