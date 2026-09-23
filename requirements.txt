@@ -3,3 +3,6 @@ pytest-html
 pytest-base-url
 pytest-playwright
 python-dotenv
+fastapi
+uvicorn
+sqlalchemy
