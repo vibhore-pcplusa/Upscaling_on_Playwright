@@ -14,7 +14,12 @@ source venv/bin/activate
 python3 -m pytest -s test_agencies_e2e.py
 ```
 
-### 3. Open the generated HTML report:
+### 3. Run the fast api tests using pytest:
+```bash
+python3 -m pytest -s test_fastapi_e2e.py
+```
+
+### 4. Open the generated HTML report:
 ```bash
 open reports/report.html
 ```
